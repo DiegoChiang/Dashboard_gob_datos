@@ -237,14 +237,14 @@
             <div><span class="dot coral"></span><h2>Rings de avance por variable</h2></div>
           </div>
           <div class="rings-grid">
-            <div class="ring-cell"><canvas id="ring1"></canvas><b>20%</b><span>prob_churn</span></div>
-            <div class="ring-cell"><canvas id="ring2"></canvas><b>15%</b><span>prob_compra_tc</span></div>
-            <div class="ring-cell"><canvas id="ring3"></canvas><b>50%</b><span>llamadas_1m</span></div>
-            <div class="ring-cell"><canvas id="ring4"></canvas><b>50%</b><span>llamadas_3m</span></div>
-            <div class="ring-cell"><canvas id="ring5"></canvas><b>40%</b><span>dur_llamada</span></div>
-            <div class="ring-cell"><canvas id="ring6"></canvas><b>60%</b><span>rango_edad</span></div>
-            <div class="ring-cell"><canvas id="ring7"></canvas><b>70%</b><span>segmento</span></div>
-            <div class="ring-cell"><canvas id="ring8"></canvas><b>80%</b><span>es_cliente</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring1"></canvas><b>20%</b></div><span>prob_churn</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring2"></canvas><b>15%</b></div><span>prob_compra_tc</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring3"></canvas><b>50%</b></div><span>llamadas_1m</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring4"></canvas><b>50%</b></div><span>llamadas_3m</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring5"></canvas><b>40%</b></div><span>dur_llamada</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring6"></canvas><b>60%</b></div><span>rango_edad</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring7"></canvas><b>70%</b></div><span>segmento</span></div>
+            <div class="ring-cell"><div class="ring-chart"><canvas id="ring8"></canvas><b>80%</b></div><span>es_cliente</span></div>
           </div>
           <div class="insight-box violet-box">Marco de referencia: Ley 29733 · SBS 504-2021 · Arquitectura Medallion Raw → STG → ANL.</div>
         </article>
@@ -394,9 +394,15 @@
       type: 'doughnut',
       data: {
         labels: ['Abiertos', 'En proceso', 'Pend. info', 'Resueltos'],
-        datasets: [{ data: [6, 3, 1, 1], backgroundColor: [red, gold, blue, green], borderWidth: 0, hoverOffset: 8 }]
+        datasets: [{ data: [6, 3, 1, 1], backgroundColor: [red, gold, blue, green], borderWidth: 0, hoverOffset: 5 }]
       },
-      options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
+        layout: { padding: 10 },
+        plugins: { legend: { display: false } }
+      }
     }));
 
     charts.push(new Chart(document.getElementById('maturityChart'), {
@@ -429,8 +435,14 @@
     ringData.forEach(([id, value, color]) => {
       charts.push(new Chart(document.getElementById(id), {
         type: 'doughnut',
-        data: { datasets: [{ data: [value, 100 - value], backgroundColor: [color, 'rgba(255,255,255,.08)'], borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '76%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+        data: { datasets: [{ data: [value, 100 - value], backgroundColor: [color, 'rgba(255,255,255,.08)'], borderWidth: 0, hoverOffset: 3 }] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '76%',
+          layout: { padding: 4 },
+          plugins: { legend: { display: false }, tooltip: { enabled: false } }
+        }
       }));
     });
   </script>
