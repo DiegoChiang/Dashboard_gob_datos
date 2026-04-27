@@ -1,466 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de Gobierno de Datos | Banco Perú</title>
+  <link rel="stylesheet" href="styles_dashboard_gobierno_datos.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+  <main class="dashboard-shell" aria-label="Dashboard visual de Gobierno de Datos">
+    <section class="hero-card">
+      <div class="hero-glow hero-glow-one"></div>
+      <div class="hero-glow hero-glow-two"></div>
 
-<h2 class="sr-only">Dashboard visual de Gobierno de Datos – Banco Perú, Grupo 1</h2>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-.db{width:100%;font-family:var(--font-sans)}
-
-/* Header */
-.hdr{background:linear-gradient(135deg,#0C447C 0%,#185FA5 60%,#1D9E75 100%);border-radius:var(--border-radius-lg);padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
-.hdr-title{color:#fff;font-size:16px;font-weight:500}
-.hdr-sub{color:rgba(255,255,255,0.7);font-size:10px;margin-top:3px}
-.hdr-badges{display:flex;gap:6px;flex-wrap:wrap}
-.hbadge{padding:4px 12px;border-radius:99px;font-size:11px;font-weight:500;border:1.5px solid rgba(255,255,255,0.4);color:#fff}
-.hbadge.red{background:rgba(163,45,45,0.7)}
-.hbadge.amber{background:rgba(186,117,23,0.7)}
-.hbadge.teal{background:rgba(15,110,86,0.7)}
-
-/* Tabs */
-.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.tab{font-size:11px;padding:6px 16px;border-radius:99px;border:1.5px solid var(--color-border-secondary);cursor:pointer;background:transparent;color:var(--color-text-secondary);font-weight:500;transition:all .15s}
-.tab.t1.active{background:#0C447C;color:#fff;border-color:#0C447C}
-.tab.t2.active{background:#0F6E56;color:#fff;border-color:#0F6E56}
-.tab.t3.active{background:#3C3489;color:#fff;border-color:#3C3489}
-.tab.t4.active{background:#993C1D;color:#fff;border-color:#993C1D}
-
-.tp{display:none}.tp.active{display:block}
-
-/* Color metric cards */
-.cards5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
-.cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.kcard{border-radius:var(--border-radius-lg);padding:14px;color:#fff;position:relative;overflow:hidden}
-.kcard .klabel{font-size:10px;opacity:.85;margin-bottom:6px}
-.kcard .kval{font-size:26px;font-weight:500;line-height:1}
-.kcard .ksub{font-size:9px;opacity:.75;margin-top:4px}
-.kcard .kicon{position:absolute;right:10px;top:10px;font-size:22px;opacity:.25}
-.kc-blue{background:linear-gradient(135deg,#0C447C,#185FA5)}
-.kc-teal{background:linear-gradient(135deg,#085041,#1D9E75)}
-.kc-amber{background:linear-gradient(135deg,#633806,#BA7517)}
-.kc-red{background:linear-gradient(135deg,#791F1F,#E24B4A)}
-.kc-purple{background:linear-gradient(135deg,#26215C,#7F77DD)}
-.kc-coral{background:linear-gradient(135deg,#4A1B0C,#D85A30)}
-.kc-green{background:linear-gradient(135deg,#173404,#639922)}
-.kc-pink{background:linear-gradient(135deg,#4B1528,#D4537E)}
-
-/* Panels */
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.row3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin-bottom:10px}
-.panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
-.pt{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.pt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.pt-sub{font-size:9px;color:var(--color-text-tertiary);font-weight:400;margin-left:auto}
-
-/* Rule bars v2 */
-.rbar{margin-bottom:7px}
-.rbar-top{display:flex;justify-content:space-between;margin-bottom:2px}
-.rbar-name{font-size:10px;color:var(--color-text-secondary)}
-.rbar-pct{font-size:10px;font-weight:500}
-.rbar-bg{height:8px;border-radius:4px;background:var(--color-border-tertiary);overflow:hidden}
-.rbar-fill{height:100%;border-radius:4px}
-
-/* Progress rings */
-.rings-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.ring-item{display:flex;flex-direction:column;align-items:center;gap:4px}
-.ring-wrap{position:relative;width:64px;height:64px}
-.ring-wrap canvas{position:absolute}
-.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.ring-center .rpct{font-size:13px;font-weight:500;color:var(--color-text-primary)}
-.ring-center .rdim{font-size:8px;color:var(--color-text-tertiary)}
-.ring-lbl{font-size:9px;color:var(--color-text-secondary);text-align:center;line-height:1.3;max-width:70px}
-
-/* Maturity visual */
-.mat-steps{display:flex;gap:0;margin-top:8px}
-.mat-s{flex:1;padding:8px 4px;text-align:center;font-size:9px;font-weight:500;position:relative}
-.mat-s:first-child{border-radius:var(--border-radius-md) 0 0 var(--border-radius-md)}
-.mat-s:last-child{border-radius:0 var(--border-radius-md) var(--border-radius-md) 0}
-.mat-s.done{background:#0C447C;color:#fff}
-.mat-s.target{background:#9FE1CB;color:#085041}
-.mat-s.idle{background:var(--color-background-secondary);color:var(--color-text-tertiary)}
-
-/* Process steps */
-.psteps{display:flex;flex-direction:column;gap:6px}
-.pstep{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--border-radius-md)}
-.pstep.ok{background:rgba(99,153,34,0.12);border-left:3px solid #639922}
-.pstep.warn{background:rgba(186,117,23,0.12);border-left:3px solid #BA7517}
-.pstep.bad{background:rgba(163,45,45,0.12);border-left:3px solid #A32D2D}
-.pstep-ico{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
-.ico-ok{background:#639922;color:#fff}
-.ico-warn{background:#BA7517;color:#fff}
-.ico-bad{background:#A32D2D;color:#fff}
-.pstep-text{flex:1}
-.pstep-title{font-size:10px;font-weight:500}
-.pstep-sub{font-size:9px;opacity:.8}
-
-/* Variables v2 */
-.var-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-.vcard{border-radius:var(--border-radius-md);padding:10px 12px;color:#fff}
-.vcard .vname{font-size:9px;opacity:.85;margin-bottom:3px}
-.vcard .vpct{font-size:20px;font-weight:500}
-.vcard .vtag{font-size:8px;opacity:.75;margin-top:2px}
-.vbar{height:4px;border-radius:2px;background:rgba(255,255,255,0.25);margin-top:6px;overflow:hidden}
-.vbar-fill{height:100%;border-radius:2px;background:rgba(255,255,255,0.85)}
-
-/* Objective cards */
-.obj-list{display:flex;flex-direction:column;gap:5px}
-.obj{border-radius:var(--border-radius-md);padding:8px 12px;display:flex;align-items:center;gap:10px}
-.obj-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;color:#fff}
-.obj-text{flex:1}
-.obj-title{font-size:10px;font-weight:500;color:var(--color-text-primary)}
-.obj-sub{font-size:9px;color:var(--color-text-secondary)}
-.obj-badge{font-size:9px;padding:2px 8px;border-radius:99px;font-weight:500;flex-shrink:0}
-
-/* Roadmap phases */
-.phase-card{border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:7px;position:relative;overflow:hidden}
-.phase-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
-.ph1::before{background:#185FA5}
-.ph2::before{background:#1D9E75}
-.ph3::before{background:#BA7517}
-.phase-card-inner{padding-left:8px}
-.ph-title{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
-.ph-tasks{font-size:9px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:5px}
-.ph-prog{display:flex;align-items:center;gap:8px}
-.ph-bar{flex:1;height:6px;border-radius:3px;background:var(--color-border-tertiary);overflow:hidden}
-.ph-fill{height:100%;border-radius:3px}
-
-/* RACI mini table */
-.raci-table{width:100%;font-size:9px;border-collapse:collapse}
-.raci-table th{color:var(--color-text-tertiary);padding:4px 6px;text-align:center;border-bottom:0.5px solid var(--color-border-tertiary)}
-.raci-table td{padding:4px 6px;text-align:center;border-bottom:0.5px solid var(--color-border-tertiary)}
-.raci-table tr:last-child td{border-bottom:none}
-.raci-table td:first-child{text-align:left;color:var(--color-text-secondary)}
-.rc{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:#fff}
-.rcR{background:#185FA5}.rcA{background:#A32D2D}.rcC{background:#BA7517}.rcI{background:#888780}
-
-/* footer */
-.footer{font-size:9px;color:var(--color-text-tertiary);margin-top:10px;display:flex;justify-content:space-between;padding-top:8px;border-top:0.5px solid var(--color-border-tertiary)}
-</style>
-
-<!-- HEADER -->
-<div class="db">
-<div class="hdr">
-  <div>
-    <div class="hdr-title">Gobierno de Datos · Banco Perú &nbsp;<span style="opacity:.7;font-weight:400">Grupo 1 — DRJV Consulting SAC</span></div>
-    <div class="hdr-sub">anl.persona_natural.maestra_telefonos &amp; anl.featurestore.variables_modelos · Actualizado: 26/04/2026 10:30</div>
-  </div>
-  <div class="hdr-badges">
-    <span class="hbadge amber">Madurez: Inicial</span>
-    <span class="hbadge red">11 incidentes</span>
-    <span class="hbadge teal">90 días MVP</span>
-  </div>
-</div>
-
-<!-- TABS -->
-<div class="tabs">
-  <button class="tab t1 active" onclick="sw('exec',this)">🏠 Vista ejecutiva</button>
-  <button class="tab t2" onclick="sw('caso1',this)">📞 Caso 1 · Teléfonos</button>
-  <button class="tab t3" onclick="sw('caso2',this)">📊 Caso 2 · Variables</button>
-  <button class="tab t4" onclick="sw('roadmap',this)">🗺 Roadmap</button>
-</div>
-
-<!-- ======== EXEC ======== -->
-<div id="tp-exec" class="tp active">
-
-  <!-- Cards row 1 -->
-  <div class="cards5">
-    <div class="kcard kc-blue"><div class="kicon">📊</div><div class="klabel">Score gobernanza global</div><div class="kval">47%</div><div class="ksub">Umbral mínimo: 60%</div></div>
-    <div class="kcard kc-amber"><div class="kicon">📞</div><div class="klabel">Salud Caso 1 · Teléfonos</div><div class="kval">76%</div><div class="ksub">7 reglas activas</div></div>
-    <div class="kcard kc-red"><div class="kicon">⚠️</div><div class="klabel">Score Caso 2 · Variables</div><div class="kval">38%</div><div class="ksub">Nivel crítico</div></div>
-    <div class="kcard kc-coral"><div class="kicon">🔥</div><div class="klabel">Incidentes abiertos</div><div class="kval">11</div><div class="ksub">+3 vs semana anterior</div></div>
-    <div class="kcard kc-purple"><div class="kicon">👤</div><div class="klabel">Data owners asignados</div><div class="kval">37%</div><div class="ksub">3 de 8 variables</div></div>
-  </div>
-
-  <!-- Cards row 2 -->
-  <div class="cards5">
-    <div class="kcard kc-teal"><div class="kicon">✅</div><div class="klabel">Reglas documentadas</div><div class="kval">7</div><div class="ksub">R001–R007 activas</div></div>
-    <div class="kcard kc-red"><div class="kicon">👥</div><div class="klabel">Registros duplicados</div><div class="kval">47%</div><div class="ksub">Caso 1 — crítico</div></div>
-    <div class="kcard kc-amber"><div class="kicon">📅</div><div class="klabel">Fechas con error</div><div class="kval">24%</div><div class="ksub">Formato no estándar</div></div>
-    <div class="kcard kc-purple"><div class="kicon">🔗</div><div class="klabel">Sin documento asociado</div><div class="kval">12%</div><div class="ksub">Integridad — R003</div></div>
-    <div class="kcard kc-green"><div class="kicon">🎯</div><div class="klabel">Meta gobernanza 90d</div><div class="kval">60%</div><div class="ksub">Inicial → Repetible</div></div>
-  </div>
-
-  <div class="row3">
-    <!-- Trend chart -->
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#185FA5"></span>Tendencia score gobernanza — 8 semanas <span class="pt-sub">objetivo ≥60%</span></div>
-      <div style="position:relative;height:150px"><canvas id="trendC"></canvas></div>
-    </div>
-
-    <!-- Incidents donut -->
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#E24B4A"></span>Incidentes por estado</div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <div style="position:relative;width:90px;height:90px;flex-shrink:0">
-          <canvas id="incC"></canvas>
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
-            <div style="font-size:20px;font-weight:500;color:var(--color-text-primary)">11</div>
-            <div style="font-size:9px;color:var(--color-text-tertiary)">total</div>
+      <div class="hero-content">
+        <div class="brand-block">
+          <div class="brand-mark">GD</div>
+          <div>
+            <p class="eyebrow">Gobierno de Datos · Banco Perú</p>
+            <h1>Centro de Control Ejecutivo</h1>
+            <p class="hero-copy">Diagnóstico de calidad, ownership, madurez e implementación MVP para los dominios críticos de teléfonos y variables analíticas.</p>
           </div>
         </div>
-        <div style="flex:1;font-size:10px">
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><span style="width:10px;height:10px;border-radius:2px;background:#A32D2D;display:inline-block"></span>Abiertos<span style="margin-left:auto;font-weight:500;color:#A32D2D">6</span></div>
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><span style="width:10px;height:10px;border-radius:2px;background:#BA7517;display:inline-block"></span>En proceso<span style="margin-left:auto;font-weight:500;color:#BA7517">3</span></div>
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD;display:inline-block"></span>Pend. info<span style="margin-left:auto;font-weight:500;color:#378ADD">1</span></div>
-          <div style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#639922;display:inline-block"></span>Resueltos<span style="margin-left:auto;font-weight:500;color:#639922">1</span></div>
+
+        <div class="hero-meta">
+          <span class="pill pill-warning">Madurez: Inicial</span>
+          <span class="pill pill-danger">11 incidentes</span>
+          <span class="pill pill-success">MVP 90 días</span>
         </div>
       </div>
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px;font-size:9px;color:var(--color-text-secondary)">TTD: <strong style="color:var(--color-text-warning)">N/D</strong> &nbsp;·&nbsp; TTR: <strong style="color:var(--color-text-warning)">N/D</strong> &nbsp;·&nbsp; Sin proceso formal aún</div>
-    </div>
 
-    <!-- Maturity -->
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#7F77DD"></span>Nivel de madurez</div>
-      <div style="display:flex;justify-content:center;margin:6px 0">
-        <div style="position:relative;width:100px;height:100px">
-          <canvas id="matC"></canvas>
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
-            <div style="font-size:11px;font-weight:500;color:var(--color-text-primary)">Nivel 1</div>
-            <div style="font-size:9px;color:var(--color-text-tertiary)">Inicial</div>
+      <div class="hero-bottom">
+        <div>
+          <span class="meta-label">Fuentes monitoreadas</span>
+          <strong>anl.persona_natural.maestra_telefonos · anl.featurestore.variables_modelos</strong>
+        </div>
+        <div>
+          <span class="meta-label">Última actualización</span>
+          <strong>26/04/2026 · 10:30</strong>
+        </div>
+        <div>
+          <span class="meta-label">Equipo</span>
+          <strong>Grupo 1 · DRJV Consulting SAC</strong>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabbar" role="tablist" aria-label="Secciones del dashboard">
+      <button class="tab-button active" type="button" role="tab" aria-selected="true" aria-controls="panel-exec" data-target="exec">
+        <span>Vista ejecutiva</span>
+      </button>
+      <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-caso1" data-target="caso1">
+        <span>Caso 1 · Teléfonos</span>
+      </button>
+      <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-caso2" data-target="caso2">
+        <span>Caso 2 · Variables</span>
+      </button>
+      <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-roadmap" data-target="roadmap">
+        <span>Roadmap</span>
+      </button>
+    </nav>
+
+    <section id="panel-exec" class="tab-panel active" role="tabpanel">
+      <div class="kpi-grid kpi-grid-five">
+        <article class="kpi-card accent-blue">
+          <span class="kpi-icon">◆</span>
+          <p>Score gobernanza global</p>
+          <strong>47%</strong>
+          <small>Umbral mínimo esperado: 60%</small>
+        </article>
+        <article class="kpi-card accent-gold">
+          <span class="kpi-icon">◉</span>
+          <p>Salud Caso 1 · Teléfonos</p>
+          <strong>76%</strong>
+          <small>7 reglas activas R001–R007</small>
+        </article>
+        <article class="kpi-card accent-red">
+          <span class="kpi-icon">▲</span>
+          <p>Score Caso 2 · Variables</p>
+          <strong>38%</strong>
+          <small>Nivel crítico de documentación</small>
+        </article>
+        <article class="kpi-card accent-coral">
+          <span class="kpi-icon">!</span>
+          <p>Incidentes abiertos</p>
+          <strong>11</strong>
+          <small>+3 frente a la semana anterior</small>
+        </article>
+        <article class="kpi-card accent-violet">
+          <span class="kpi-icon">●</span>
+          <p>Data owners asignados</p>
+          <strong>37%</strong>
+          <small>3 de 8 variables críticas</small>
+        </article>
+      </div>
+
+      <div class="kpi-grid kpi-grid-five secondary-kpis">
+        <article class="mini-kpi"><span>Reglas documentadas</span><strong>7</strong><small>Activas</small></article>
+        <article class="mini-kpi danger"><span>Registros duplicados</span><strong>47%</strong><small>Caso 1</small></article>
+        <article class="mini-kpi warning"><span>Fechas con error</span><strong>24%</strong><small>Formato</small></article>
+        <article class="mini-kpi violet"><span>Sin documento asociado</span><strong>12%</strong><small>Integridad</small></article>
+        <article class="mini-kpi success"><span>Meta 90 días</span><strong>60%</strong><small>Inicial → Repetible</small></article>
+      </div>
+
+      <div class="layout-three">
+        <article class="panel panel-wide">
+          <div class="panel-title">
+            <div><span class="dot blue"></span><h2>Tendencia del score de gobernanza</h2></div>
+            <span>8 semanas · objetivo ≥60%</span>
           </div>
+          <div class="chart-box chart-tall"><canvas id="trendChart"></canvas></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot red"></span><h2>Incidentes por estado</h2></div>
+          </div>
+          <div class="donut-row">
+            <div class="donut-wrap">
+              <canvas id="incidentChart"></canvas>
+              <div class="donut-center"><strong>11</strong><span>Total</span></div>
+            </div>
+            <div class="legend-list">
+              <div><i class="legend-dot danger"></i>Abiertos <strong>6</strong></div>
+              <div><i class="legend-dot warning"></i>En proceso <strong>3</strong></div>
+              <div><i class="legend-dot info"></i>Pend. info <strong>1</strong></div>
+              <div><i class="legend-dot success"></i>Resueltos <strong>1</strong></div>
+            </div>
+          </div>
+          <div class="insight-box warning-box">TTD y TTR aún no son medibles por ausencia de flujo formal de tickets.</div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot violet"></span><h2>Nivel de madurez</h2></div>
+          </div>
+          <div class="gauge-wrap">
+            <canvas id="maturityChart"></canvas>
+            <div class="gauge-center"><strong>Nivel 1</strong><span>Inicial</span></div>
+          </div>
+          <div class="maturity-track">
+            <span class="current">Inicial</span>
+            <span class="target">Repetible</span>
+            <span>Definido</span>
+            <span>Gestionado</span>
+            <span>Optimizado</span>
+          </div>
+        </article>
+      </div>
+
+      <article class="panel">
+        <div class="panel-title">
+          <div><span class="dot teal"></span><h2>Cumplimiento por dimensión de calidad</h2></div>
+          <span>Casos 1 y 2</span>
         </div>
-      </div>
-      <div class="mat-steps">
-        <div class="mat-s done">Inicial<br>●</div>
-        <div class="mat-s target">Repetible<br>◎ meta</div>
-        <div class="mat-s idle">Definido</div>
-        <div class="mat-s idle">Gestion.</div>
-        <div class="mat-s idle">Optim.</div>
-      </div>
-    </div>
-  </div>
+        <div class="chart-box"><canvas id="dimensionChart"></canvas></div>
+      </article>
+    </section>
 
-  <!-- Dimension chart -->
-  <div class="panel">
-    <div class="pt"><span class="pt-dot" style="background:#1D9E75"></span>Cumplimiento por dimensión de calidad — Casos 1 y 2</div>
-    <div style="position:relative;height:120px"><canvas id="dimC"></canvas></div>
-  </div>
-</div>
-
-<!-- ======== CASO 1 ======== -->
-<div id="tp-caso1" class="tp">
-  <div class="cards4">
-    <div class="kcard kc-amber"><div class="kicon">📞</div><div class="klabel">Salud global — Caso 1</div><div class="kval">76%</div><div class="ksub">Umbral mínimo: 80%</div></div>
-    <div class="kcard kc-red"><div class="kicon">♻️</div><div class="klabel">Registros duplicados</div><div class="kval">47%</div><div class="ksub">3 fuentes en paralelo</div></div>
-    <div class="kcard kc-coral"><div class="kicon">⚡</div><div class="klabel">Sin prioridad asignada</div><div class="kval">29%</div><div class="ksub">R007 · Consistencia</div></div>
-    <div class="kcard kc-purple"><div class="kicon">📄</div><div class="klabel">Sin documento asociado</div><div class="kval">12%</div><div class="ksub">R003 · Integridad</div></div>
-  </div>
-
-  <div class="row2">
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#185FA5"></span>Reglas de calidad R001–R007 <span class="pt-sub">maestra_telefonos · Owner: Alfredo Fuentes</span></div>
-
-      <div class="rbar"><div class="rbar-top"><span class="rbar-name">R001 · num_telefono (Completitud)</span><span class="rbar-pct" style="color:#639922">82%</span></div><div class="rbar-bg"><div class="rbar-fill" style="width:82%;background:#639922"></div></div></div>
-      <div class="rbar"><div class="rbar-top"><span class="rbar-name">R002 · tip_documento (Validez)</span><span class="rbar-pct" style="color:#639922">88%</span></div><div class="rbar-bg"><div class="rbar-fill" style="width:88%;background:#639922"></div></div></div>
-      <div class="rbar"><div class="rbar-top"><span class="rbar-name">R003 · num_documento (Integridad)</span><span class="rbar-pct" style="color:#BA7517">78%</span></div><div class="rbar-bg"><div class="rbar-fill" style="width:78%;background:#BA7517"></div></div></div>
-      <div class="rbar"><div class="rbar-top"><span class="rbar-name">R004 · tip_telefono (Validez)</span><span class="rbar-pct" style="color:#BA7517">74%</span></div><div class="rbar-bg"><div class="rbar-fill" style="width:74%;background:#BA7517"></div></div></div>
-      <div class="rbar"><div class="rbar-top"><span class="rbar-name">R005 · num_telefono (Validez patrón)</span><span class="rbar-pct" style="color:#BA7517">71%</span></div><div class="rbar-bg"><div class="rbar-fill" style="width:71%;background:#BA7517"></div></div></div>
-      <div class="rbar"><div class="rbar-top"><span class="rbar-name">R006 · fec_actualización (Validez formato)</span><span class="rbar-pct" style="color:#A32D2D">56%</span></div><div class="rbar-bg"><div class="rbar-fill" style="width:56%;background:#A32D2D"></div></div></div>
-      <div class="rbar"><div class="rbar-top"><span class="rbar-name">R007 · prioridad (Consistencia)</span><span class="rbar-pct" style="color:#A32D2D">61%</span></div><div class="rbar-bg"><div class="rbar-fill" style="width:61%;background:#A32D2D"></div></div></div>
-
-      <div style="margin-top:10px;padding:8px 12px;border-radius:var(--border-radius-md);background:linear-gradient(135deg,#0C447C,#185FA5);display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:11px;color:rgba(255,255,255,0.85)">Promedio cumplimiento</span>
-        <span style="font-size:22px;font-weight:500;color:#fff">76%</span>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#1D9E75"></span>Estado del proceso de monitoreo</div>
-      <div class="psteps">
-        <div class="pstep ok"><div class="pstep-ico ico-ok">✓</div><div class="pstep-text"><div class="pstep-title" style="color:#3B6D11">CDEs identificados</div><div class="pstep-sub" style="color:#3B6D11">6 campos críticos definidos</div></div></div>
-        <div class="pstep ok"><div class="pstep-ico ico-ok">✓</div><div class="pstep-text"><div class="pstep-title" style="color:#3B6D11">Reglas documentadas</div><div class="pstep-sub" style="color:#3B6D11">7 reglas R001–R007 activas</div></div></div>
-        <div class="pstep warn"><div class="pstep-ico ico-warn">!</div><div class="pstep-text"><div class="pstep-title" style="color:#633806">Validaciones en implementación</div><div class="pstep-sub" style="color:#633806">Pendiente deploy en GCP</div></div></div>
-        <div class="pstep warn"><div class="pstep-ico ico-warn">!</div><div class="pstep-text"><div class="pstep-title" style="color:#633806">Tablero y alertas — piloto</div><div class="pstep-sub" style="color:#633806">Vista ejecutiva + operativa diseñada</div></div></div>
-        <div class="pstep bad"><div class="pstep-ico ico-bad">✗</div><div class="pstep-text"><div class="pstep-title" style="color:#791F1F">Gestión de incidencias formal</div><div class="pstep-sub" style="color:#791F1F">Sin flujo de tickets operativo</div></div></div>
-        <div class="pstep bad"><div class="pstep-ico ico-bad">✗</div><div class="pstep-text"><div class="pstep-title" style="color:#791F1F">Fuente única adoptada</div><div class="pstep-sub" style="color:#791F1F">3 fuentes paralelas activas: AWS / Oracle / SQL</div></div></div>
+    <section id="panel-caso1" class="tab-panel" role="tabpanel" hidden>
+      <div class="kpi-grid kpi-grid-four">
+        <article class="kpi-card accent-gold"><span class="kpi-icon">◉</span><p>Salud global Caso 1</p><strong>76%</strong><small>Umbral mínimo: 80%</small></article>
+        <article class="kpi-card accent-red"><span class="kpi-icon">≋</span><p>Registros duplicados</p><strong>47%</strong><small>3 fuentes en paralelo</small></article>
+        <article class="kpi-card accent-coral"><span class="kpi-icon">!</span><p>Sin prioridad asignada</p><strong>29%</strong><small>R007 · Consistencia</small></article>
+        <article class="kpi-card accent-violet"><span class="kpi-icon">□</span><p>Sin documento asociado</p><strong>12%</strong><small>R003 · Integridad</small></article>
       </div>
 
-      <div style="margin-top:10px;padding:8px 10px;border-radius:var(--border-radius-md);background:linear-gradient(135deg,#085041,#1D9E75);font-size:9px;color:rgba(255,255,255,0.85)">
-        🎯 Siguiente acción: aprobar fuente oficial y activar checklist de producción obligatorio
+      <div class="layout-two">
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot blue"></span><h2>Reglas de calidad R001–R007</h2></div>
+            <span>Owner: Alfredo Fuentes</span>
+          </div>
+
+          <div class="rule-list">
+            <div class="rule-item"><div><span>R001 · num_telefono</span><b>82%</b></div><progress max="100" value="82"></progress></div>
+            <div class="rule-item"><div><span>R002 · tip_documento</span><b>88%</b></div><progress max="100" value="88"></progress></div>
+            <div class="rule-item warning"><div><span>R003 · num_documento</span><b>78%</b></div><progress max="100" value="78"></progress></div>
+            <div class="rule-item warning"><div><span>R004 · tip_telefono</span><b>74%</b></div><progress max="100" value="74"></progress></div>
+            <div class="rule-item warning"><div><span>R005 · num_telefono patrón</span><b>71%</b></div><progress max="100" value="71"></progress></div>
+            <div class="rule-item danger"><div><span>R006 · fec_actualización</span><b>56%</b></div><progress max="100" value="56"></progress></div>
+            <div class="rule-item danger"><div><span>R007 · prioridad</span><b>61%</b></div><progress max="100" value="61"></progress></div>
+          </div>
+
+          <div class="score-banner">
+            <span>Promedio de cumplimiento</span>
+            <strong>76%</strong>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot teal"></span><h2>Estado del proceso de monitoreo</h2></div>
+          </div>
+          <div class="process-list">
+            <div class="process-card ok"><i>✓</i><div><strong>CDEs identificados</strong><span>6 campos críticos definidos.</span></div></div>
+            <div class="process-card ok"><i>✓</i><div><strong>Reglas documentadas</strong><span>7 reglas activas para monitoreo inicial.</span></div></div>
+            <div class="process-card warn"><i>!</i><div><strong>Validaciones en implementación</strong><span>Pendiente deploy operativo en GCP.</span></div></div>
+            <div class="process-card warn"><i>!</i><div><strong>Tablero y alertas en piloto</strong><span>Vista ejecutiva y operativa diseñadas.</span></div></div>
+            <div class="process-card bad"><i>×</i><div><strong>Gestión formal de incidencias</strong><span>No existe flujo de tickets productivo.</span></div></div>
+            <div class="process-card bad"><i>×</i><div><strong>Fuente única no adoptada</strong><span>AWS, Oracle y SQL operan en paralelo.</span></div></div>
+          </div>
+          <div class="action-callout">Siguiente acción: aprobar fuente oficial y activar checklist obligatorio de producción.</div>
+        </article>
       </div>
-    </div>
-  </div>
-</div>
+    </section>
 
-<!-- ======== CASO 2 ======== -->
-<div id="tp-caso2" class="tp">
-  <div class="cards4">
-    <div class="kcard kc-red"><div class="kicon">📉</div><div class="klabel">Score gobernanza Caso 2</div><div class="kval">38%</div><div class="ksub">Nivel crítico — meta 60%</div></div>
-    <div class="kcard kc-coral"><div class="kicon">📝</div><div class="klabel">Lógica documentada</div><div class="kval">37.5%</div><div class="ksub">3 de 8 variables</div></div>
-    <div class="kcard kc-purple"><div class="kicon">👤</div><div class="klabel">Con data owner</div><div class="kval">37.5%</div><div class="ksub">5 sin responsable formal</div></div>
-    <div class="kcard kc-amber"><div class="kicon">⚠️</div><div class="klabel">Posibles duplicados</div><div class="kval">2</div><div class="ksub">cant_llamadas 1m/3m</div></div>
-  </div>
-
-  <div class="row2">
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#7F77DD"></span>Cumplimiento por variable analítica <span class="pt-sub">variables_modelos · Owner: Lucía Campos</span></div>
-      <div class="var-grid2">
-        <div class="vcard" style="background:linear-gradient(135deg,#791F1F,#E24B4A)"><div class="vname">probabilidad_churn</div><div class="vpct">20%</div><div class="vtag">Sin lógica ni owner</div><div class="vbar"><div class="vbar-fill" style="width:20%"></div></div></div>
-        <div class="vcard" style="background:linear-gradient(135deg,#791F1F,#A32D2D)"><div class="vname">prob_compra_tc</div><div class="vpct">15%</div><div class="vtag">Sin lógica ni owner</div><div class="vbar"><div class="vbar-fill" style="width:15%"></div></div></div>
-        <div class="vcard" style="background:linear-gradient(135deg,#633806,#BA7517)"><div class="vname">cant_llamadas_1m</div><div class="vpct">50%</div><div class="vtag">Posible duplicado</div><div class="vbar"><div class="vbar-fill" style="width:50%"></div></div></div>
-        <div class="vcard" style="background:linear-gradient(135deg,#633806,#BA7517)"><div class="vname">cant_llamadas_3m</div><div class="vpct">50%</div><div class="vtag">Posible duplicado</div><div class="vbar"><div class="vbar-fill" style="width:50%"></div></div></div>
-        <div class="vcard" style="background:linear-gradient(135deg,#633806,#EF9F27)"><div class="vname">duracion_llamada_prom</div><div class="vpct">40%</div><div class="vtag">Lógica ausente</div><div class="vbar"><div class="vbar-fill" style="width:40%"></div></div></div>
-        <div class="vcard" style="background:linear-gradient(135deg,#3B6D11,#639922)"><div class="vname">rango_edad</div><div class="vpct">60%</div><div class="vtag">Sin owner asignado</div><div class="vbar"><div class="vbar-fill" style="width:60%"></div></div></div>
-        <div class="vcard" style="background:linear-gradient(135deg,#27500A,#639922)"><div class="vname">segmento_cliente</div><div class="vpct">70%</div><div class="vtag">Parcialmente documentado</div><div class="vbar"><div class="vbar-fill" style="width:70%"></div></div></div>
-        <div class="vcard" style="background:linear-gradient(135deg,#085041,#1D9E75)"><div class="vname">es_cliente</div><div class="vpct">80%</div><div class="vtag">Mejor score</div><div class="vbar"><div class="vbar-fill" style="width:80%"></div></div></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#D85A30"></span>Score por rings — variables</div>
-      <div class="rings-grid">
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r1"></canvas><div class="ring-center"><div class="rpct" style="color:#A32D2D">20%</div></div></div><div class="ring-lbl">prob_churn</div></div>
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r2"></canvas><div class="ring-center"><div class="rpct" style="color:#A32D2D">15%</div></div></div><div class="ring-lbl">prob_compra_tc</div></div>
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r3"></canvas><div class="ring-center"><div class="rpct" style="color:#BA7517">50%</div></div></div><div class="ring-lbl">llamadas_1m</div></div>
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r4"></canvas><div class="ring-center"><div class="rpct" style="color:#BA7517">50%</div></div></div><div class="ring-lbl">llamadas_3m</div></div>
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r5"></canvas><div class="ring-center"><div class="rpct" style="color:#BA7517">40%</div></div></div><div class="ring-lbl">dur_llamada</div></div>
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r6"></canvas><div class="ring-center"><div class="rpct" style="color:#639922">60%</div></div></div><div class="ring-lbl">rango_edad</div></div>
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r7"></canvas><div class="ring-center"><div class="rpct" style="color:#639922">70%</div></div></div><div class="ring-lbl">segmento</div></div>
-        <div class="ring-item"><div class="ring-wrap"><canvas id="r8"></canvas><div class="ring-center"><div class="rpct" style="color:#1D9E75">80%</div></div></div><div class="ring-lbl">es_cliente</div></div>
-      </div>
-      <div style="margin-top:10px;padding:8px 10px;border-radius:var(--border-radius-md);background:linear-gradient(135deg,#26215C,#534AB7);font-size:9px;color:rgba(255,255,255,0.85)">
-        Marco legal: Ley 29733 · SBS 504-2021 · Arquitectura Medallion Raw→STG→ANL
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ======== ROADMAP ======== -->
-<div id="tp-roadmap" class="tp">
-  <div class="cards4">
-    <div class="kcard kc-blue"><div class="kicon">🗺</div><div class="klabel">Duración del MVP</div><div class="kval">90d</div><div class="ksub">3 fases · 12 hitos</div></div>
-    <div class="kcard kc-teal"><div class="kicon">📈</div><div class="klabel">Meta score gobernanza</div><div class="kval">≥60%</div><div class="ksub">Desde 47% actual</div></div>
-    <div class="kcard kc-amber"><div class="kicon">🔄</div><div class="klabel">Progreso fase 1</div><div class="kval">25%</div><div class="ksub">Semanas 1–4</div></div>
-    <div class="kcard kc-purple"><div class="kicon">🎯</div><div class="klabel">Etapa actual</div><div class="kval">Sens.</div><div class="ksub">Sensibilización activa</div></div>
-  </div>
-
-  <div class="row2">
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#185FA5"></span>Fases de implementación</div>
-
-      <div class="phase-card ph1" style="background:var(--color-background-secondary)">
-        <div class="phase-card-inner">
-          <div class="ph-title">Fase 1 · Fundamentos — Semanas 1–4 · En curso</div>
-          <div class="ph-tasks">• Definir owners y stewards &nbsp;·&nbsp; Aprobar fuente oficial<br>• Formalizar política mínima &nbsp;·&nbsp; Armar glosario / diccionario base</div>
-          <div class="ph-prog"><div class="ph-bar"><div class="ph-fill" style="width:25%;background:#185FA5"></div></div><span style="font-size:9px;font-weight:500;color:#185FA5">25%</span></div>
-        </div>
+    <section id="panel-caso2" class="tab-panel" role="tabpanel" hidden>
+      <div class="kpi-grid kpi-grid-four">
+        <article class="kpi-card accent-red"><span class="kpi-icon">▼</span><p>Score gobernanza Caso 2</p><strong>38%</strong><small>Nivel crítico · meta 60%</small></article>
+        <article class="kpi-card accent-coral"><span class="kpi-icon">◧</span><p>Lógica documentada</p><strong>37.5%</strong><small>3 de 8 variables</small></article>
+        <article class="kpi-card accent-violet"><span class="kpi-icon">●</span><p>Con data owner</p><strong>37.5%</strong><small>5 sin responsable formal</small></article>
+        <article class="kpi-card accent-gold"><span class="kpi-icon">≋</span><p>Posibles duplicados</p><strong>2</strong><small>cant_llamadas 1m/3m</small></article>
       </div>
 
-      <div class="phase-card ph2" style="background:var(--color-background-secondary)">
-        <div class="phase-card-inner">
-          <div class="ph-title">Fase 2 · Ejecución — Semanas 5–8 · Pendiente</div>
-          <div class="ph-tasks">• Implementar validaciones &nbsp;·&nbsp; Activar tablero y tickets<br>• Inventariar variables críticas &nbsp;·&nbsp; Capacitar y operar piloto</div>
-          <div class="ph-prog"><div class="ph-bar"><div class="ph-fill" style="width:0%;background:#1D9E75"></div></div><span style="font-size:9px;font-weight:500;color:#1D9E75">0%</span></div>
-        </div>
+      <div class="layout-two">
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot violet"></span><h2>Cumplimiento por variable analítica</h2></div>
+            <span>Owner: Lucía Campos</span>
+          </div>
+          <div class="variable-grid">
+            <div class="variable-card critical"><span>probabilidad_churn</span><strong>20%</strong><small>Sin lógica ni owner</small></div>
+            <div class="variable-card critical deep"><span>prob_compra_tc</span><strong>15%</strong><small>Sin lógica ni owner</small></div>
+            <div class="variable-card warning"><span>cant_llamadas_1m</span><strong>50%</strong><small>Posible duplicado</small></div>
+            <div class="variable-card warning"><span>cant_llamadas_3m</span><strong>50%</strong><small>Posible duplicado</small></div>
+            <div class="variable-card warning light"><span>duracion_llamada_prom</span><strong>40%</strong><small>Lógica ausente</small></div>
+            <div class="variable-card good"><span>rango_edad</span><strong>60%</strong><small>Sin owner asignado</small></div>
+            <div class="variable-card good"><span>segmento_cliente</span><strong>70%</strong><small>Parcialmente documentado</small></div>
+            <div class="variable-card excellent"><span>es_cliente</span><strong>80%</strong><small>Mejor score</small></div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot coral"></span><h2>Rings de avance por variable</h2></div>
+          </div>
+          <div class="rings-grid">
+            <div class="ring-cell"><canvas id="ring1"></canvas><b>20%</b><span>prob_churn</span></div>
+            <div class="ring-cell"><canvas id="ring2"></canvas><b>15%</b><span>prob_compra_tc</span></div>
+            <div class="ring-cell"><canvas id="ring3"></canvas><b>50%</b><span>llamadas_1m</span></div>
+            <div class="ring-cell"><canvas id="ring4"></canvas><b>50%</b><span>llamadas_3m</span></div>
+            <div class="ring-cell"><canvas id="ring5"></canvas><b>40%</b><span>dur_llamada</span></div>
+            <div class="ring-cell"><canvas id="ring6"></canvas><b>60%</b><span>rango_edad</span></div>
+            <div class="ring-cell"><canvas id="ring7"></canvas><b>70%</b><span>segmento</span></div>
+            <div class="ring-cell"><canvas id="ring8"></canvas><b>80%</b><span>es_cliente</span></div>
+          </div>
+          <div class="insight-box violet-box">Marco de referencia: Ley 29733 · SBS 504-2021 · Arquitectura Medallion Raw → STG → ANL.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="panel-roadmap" class="tab-panel" role="tabpanel" hidden>
+      <div class="kpi-grid kpi-grid-four">
+        <article class="kpi-card accent-blue"><span class="kpi-icon">◇</span><p>Duración del MVP</p><strong>90d</strong><small>3 fases · 12 hitos</small></article>
+        <article class="kpi-card accent-teal"><span class="kpi-icon">↑</span><p>Meta score gobernanza</p><strong>≥60%</strong><small>Desde 47% actual</small></article>
+        <article class="kpi-card accent-gold"><span class="kpi-icon">◔</span><p>Progreso fase 1</p><strong>25%</strong><small>Semanas 1–4</small></article>
+        <article class="kpi-card accent-violet"><span class="kpi-icon">◎</span><p>Etapa actual</p><strong>Sens.</strong><small>Sensibilización activa</small></article>
       </div>
 
-      <div class="phase-card ph3" style="background:var(--color-background-secondary)">
-        <div class="phase-card-inner">
-          <div class="ph-title">Fase 3 · Institucionalización — Semanas 9–12 · Pendiente</div>
-          <div class="ph-tasks">• Ajustar reglas y cerrar brechas &nbsp;·&nbsp; Institucionalizar checklist<br>• Expansión a otros dominios &nbsp;·&nbsp; Presentar resultados al comité</div>
-          <div class="ph-prog"><div class="ph-bar"><div class="ph-fill" style="width:0%;background:#BA7517"></div></div><span style="font-size:9px;font-weight:500;color:#BA7517">0%</span></div>
-        </div>
+      <div class="layout-two">
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot blue"></span><h2>Fases de implementación</h2></div>
+          </div>
+          <div class="timeline">
+            <div class="timeline-card active">
+              <span>Fase 1 · Semanas 1–4</span>
+              <strong>Fundamentos</strong>
+              <p>Definir owners y stewards, aprobar fuente oficial, formalizar política mínima y construir glosario/diccionario base.</p>
+              <div class="timeline-progress"><i style="width:25%"></i></div>
+            </div>
+            <div class="timeline-card">
+              <span>Fase 2 · Semanas 5–8</span>
+              <strong>Ejecución</strong>
+              <p>Implementar validaciones, activar tablero, operar flujo de tickets, inventariar variables críticas y capacitar el piloto.</p>
+              <div class="timeline-progress"><i style="width:0%"></i></div>
+            </div>
+            <div class="timeline-card">
+              <span>Fase 3 · Semanas 9–12</span>
+              <strong>Institucionalización</strong>
+              <p>Ajustar reglas, cerrar brechas, institucionalizar checklist, escalar dominios y presentar resultados al comité.</p>
+              <div class="timeline-progress"><i style="width:0%"></i></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <div><span class="dot coral"></span><h2>Objetivos SMART · 90 días</h2></div>
+          </div>
+          <div class="smart-list">
+            <div><b>1</b><span><strong>Fuente única adoptada al 100%</strong><small>Todos los squads usando maestra_telefonos.</small></span><em>En curso</em></div>
+            <div><b>2</b><span><strong>Checklist de producción obligatorio</strong><small>Metadata, owner y reglas en cada pase.</small></span><em>En curso</em></div>
+            <div><b>3</b><span><strong>Score gobernanza ≥ 60%</strong><small>Subir de 47% a nivel repetible.</small></span><em>Pendiente</em></div>
+            <div><b>4</b><span><strong>Tablero operativo con alertas</strong><small>Vista ejecutiva y operativa automática.</small></span><em>Pendiente</em></div>
+            <div><b>5</b><span><strong>Data owners 100% formalizados</strong><small>Cada CDE con owner, steward y custodian.</small></span><em>Pendiente</em></div>
+            <div><b>6</b><span><strong>TTD/TTR medibles</strong><small>Primer ciclo completo de incidencias.</small></span><em>Pendiente</em></div>
+          </div>
+          <div class="action-callout coral">Cierre esperado: MVP institucionalizado y escalable a nuevos dominios de datos.</div>
+        </article>
       </div>
-    </div>
+    </section>
 
-    <div class="panel">
-      <div class="pt"><span class="pt-dot" style="background:#D85A30"></span>Objetivos SMART — 90 días</div>
-      <div class="obj-list">
-        <div class="obj" style="background:rgba(55,138,221,0.1)"><div class="obj-num" style="background:#185FA5">1</div><div class="obj-text"><div class="obj-title">Fuente única adoptada al 100%</div><div class="obj-sub">Todos los squads usando maestra_telefonos</div></div><span class="obj-badge" style="background:rgba(186,117,23,0.15);color:#BA7517">En curso</span></div>
-        <div class="obj" style="background:rgba(55,138,221,0.1)"><div class="obj-num" style="background:#185FA5">2</div><div class="obj-text"><div class="obj-title">Checklist de producción obligatorio</div><div class="obj-sub">100% pases con metadata, owner y reglas</div></div><span class="obj-badge" style="background:rgba(186,117,23,0.15);color:#BA7517">En curso</span></div>
-        <div class="obj" style="background:rgba(29,158,117,0.1)"><div class="obj-num" style="background:#1D9E75">3</div><div class="obj-text"><div class="obj-title">Score gobernanza ≥ 60%</div><div class="obj-sub">Subir de 47% a ≥60% en ambos casos</div></div><span class="obj-badge" style="background:rgba(163,45,45,0.15);color:#A32D2D">Pendiente</span></div>
-        <div class="obj" style="background:rgba(29,158,117,0.1)"><div class="obj-num" style="background:#1D9E75">4</div><div class="obj-text"><div class="obj-title">Tablero operativo activo con alertas</div><div class="obj-sub">Vista ejecutiva + operativa automática</div></div><span class="obj-badge" style="background:rgba(163,45,45,0.15);color:#A32D2D">Pendiente</span></div>
-        <div class="obj" style="background:rgba(186,117,23,0.1)"><div class="obj-num" style="background:#BA7517">5</div><div class="obj-text"><div class="obj-title">Data owners 100% formalizados</div><div class="obj-sub">Cada CDE con owner + steward + custodian</div></div><span class="obj-badge" style="background:rgba(163,45,45,0.15);color:#A32D2D">Pendiente</span></div>
-        <div class="obj" style="background:rgba(186,117,23,0.1)"><div class="obj-num" style="background:#BA7517">6</div><div class="obj-text"><div class="obj-title">TTD/TTR medibles</div><div class="obj-sub">Primer ciclo completo de incidencias</div></div><span class="obj-badge" style="background:rgba(163,45,45,0.15);color:#A32D2D">Pendiente</span></div>
-      </div>
-      <div style="margin-top:8px;padding:8px;border-radius:var(--border-radius-md);background:linear-gradient(135deg,#4A1B0C,#D85A30);font-size:9px;color:rgba(255,255,255,0.9)">
-        🚀 Cierre: MVP de gobierno institucionalizado para escalar con confianza a otros dominios
-      </div>
-    </div>
-  </div>
-</div>
+    <footer class="footer-note">
+      <span>Datos analíticos · Acceso controlado · Gobierno de Datos</span>
+      <span>Banco Perú · Grupo 1 · Abril 2026</span>
+    </footer>
+  </main>
 
-<div class="footer">
-  <span>Fuente oficial: anl.persona_natural.maestra_telefonos · anl.featurestore.variables_modelos</span>
-  <span>Datos analíticos — Acceso controlado · Gobierno de Datos — Banco Perú · Grupo 1 · Abril 2026</span>
-</div>
-</div>
+  <script>
+    const charts = [];
+    const css = getComputedStyle(document.documentElement);
+    const chartText = css.getPropertyValue('--chart-text').trim();
+    const chartGrid = css.getPropertyValue('--chart-grid').trim();
+    const blue = css.getPropertyValue('--blue-400').trim();
+    const teal = css.getPropertyValue('--teal-400').trim();
+    const red = css.getPropertyValue('--red-400').trim();
+    const gold = css.getPropertyValue('--gold-400').trim();
+    const violet = css.getPropertyValue('--violet-400').trim();
+    const green = css.getPropertyValue('--green-400').trim();
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
-const dark=matchMedia('(prefers-color-scheme:dark)').matches;
-const txt=dark?'rgba(255,255,255,0.55)':'rgba(0,0,0,0.45)';
-const grid=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+    document.querySelectorAll('.tab-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = button.dataset.target;
 
-function sw(id,btn){
-  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tp-'+id).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active')});
-  btn.classList.add('active');
-}
+        document.querySelectorAll('.tab-button').forEach((tab) => {
+          tab.classList.remove('active');
+          tab.setAttribute('aria-selected', 'false');
+        });
 
-// Trend
-new Chart(document.getElementById('trendC'),{
-  type:'line',
-  data:{
-    labels:['S-7','S-6','S-5','S-4','S-3','S-2','S-1','Hoy'],
-    datasets:[
-      {label:'Score gobernanza',data:[22,25,28,32,35,38,42,47],borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.12)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:'#378ADD',borderWidth:2},
-      {label:'Objetivo ≥60%',data:[60,60,60,60,60,60,60,60],borderColor:'#1D9E75',borderDash:[6,4],pointRadius:0,borderWidth:1.5}
-    ]
-  },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:true,labels:{color:txt,font:{size:9},boxWidth:10,padding:12}}},
-    scales:{
-      x:{ticks:{color:txt,font:{size:9}},grid:{color:grid}},
-      y:{min:0,max:100,ticks:{color:txt,font:{size:9},callback:v=>v+'%'},grid:{color:grid}}
-    }
-  }
-});
+        document.querySelectorAll('.tab-panel').forEach((panel) => {
+          panel.classList.remove('active');
+          panel.hidden = true;
+        });
 
-// Incidents
-new Chart(document.getElementById('incC'),{
-  type:'doughnut',
-  data:{labels:['Abiertos','En proceso','Pend. info','Resueltos'],
-    datasets:[{data:[6,3,1,1],backgroundColor:['#A32D2D','#BA7517','#378ADD','#639922'],borderWidth:0,hoverOffset:4}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}}}
-});
+        button.classList.add('active');
+        button.setAttribute('aria-selected', 'true');
 
-// Maturity gauge
-new Chart(document.getElementById('matC'),{
-  type:'doughnut',
-  data:{labels:['Actual','Restante'],
-    datasets:[{data:[1,4],backgroundColor:['#185FA5','rgba(55,138,221,0.12)'],borderWidth:0}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}},rotation:-90,circumference:180}
-});
+        const activePanel = document.getElementById(`panel-${target}`);
+        activePanel.hidden = false;
+        activePanel.classList.add('active');
 
-// Dimension bars
-new Chart(document.getElementById('dimC'),{
-  type:'bar',
-  data:{
-    labels:['Completitud','Unicidad','Validez','Integridad','Consistencia','Disponibilidad'],
-    datasets:[{label:'%',data:[82,53,68,78,61,70],
-      backgroundColor:['#1D9E75','#A32D2D','#BA7517','#1D9E75','#A32D2D','#BA7517'],
-      borderWidth:0,borderRadius:4}]
-  },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:txt,font:{size:10}},grid:{display:false}},
-      y:{min:0,max:100,ticks:{color:txt,font:{size:9},callback:v=>v+'%'},grid:{color:grid}}
-    }
-  }
-});
+        setTimeout(() => charts.forEach((chart) => chart.resize()), 80);
+      });
+    });
 
-// Variable rings
-const rdata=[
-  {id:'r1',v:20,c:'#A32D2D'},{id:'r2',v:15,c:'#791F1F'},
-  {id:'r3',v:50,c:'#BA7517'},{id:'r4',v:50,c:'#BA7517'},
-  {id:'r5',v:40,c:'#EF9F27'},{id:'r6',v:60,c:'#639922'},
-  {id:'r7',v:70,c:'#1D9E75'},{id:'r8',v:80,c:'#085041'}
-];
-rdata.forEach(d=>{
-  new Chart(document.getElementById(d.id),{
-    type:'doughnut',
-    data:{labels:['',''],datasets:[{data:[d.v,100-d.v],backgroundColor:[d.c,'rgba(128,128,128,0.1)'],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}}
-  });
-});
-</script>
+    const baseOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: chartText, boxWidth: 10, usePointStyle: true, pointStyle: 'circle', font: { size: 11 } } }
+      }
+    };
+
+    charts.push(new Chart(document.getElementById('trendChart'), {
+      type: 'line',
+      data: {
+        labels: ['S-7', 'S-6', 'S-5', 'S-4', 'S-3', 'S-2', 'S-1', 'Hoy'],
+        datasets: [
+          {
+            label: 'Score gobernanza',
+            data: [22, 25, 28, 32, 35, 38, 42, 47],
+            borderColor: blue,
+            backgroundColor: 'rgba(78, 166, 255, .18)',
+            fill: true,
+            tension: .42,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            pointBackgroundColor: blue,
+            borderWidth: 3
+          },
+          {
+            label: 'Objetivo ≥60%',
+            data: [60, 60, 60, 60, 60, 60, 60, 60],
+            borderColor: teal,
+            borderDash: [8, 6],
+            pointRadius: 0,
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        ...baseOptions,
+        scales: {
+          x: { ticks: { color: chartText, font: { size: 11 } }, grid: { color: chartGrid } },
+          y: { min: 0, max: 100, ticks: { color: chartText, callback: (value) => `${value}%` }, grid: { color: chartGrid } }
+        }
+      }
+    }));
+
+    charts.push(new Chart(document.getElementById('incidentChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Abiertos', 'En proceso', 'Pend. info', 'Resueltos'],
+        datasets: [{ data: [6, 3, 1, 1], backgroundColor: [red, gold, blue, green], borderWidth: 0, hoverOffset: 8 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } }
+    }));
+
+    charts.push(new Chart(document.getElementById('maturityChart'), {
+      type: 'doughnut',
+      data: { labels: ['Actual', 'Restante'], datasets: [{ data: [1, 4], backgroundColor: [blue, 'rgba(255,255,255,.08)'], borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '78%', rotation: -90, circumference: 180, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+    }));
+
+    charts.push(new Chart(document.getElementById('dimensionChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Completitud', 'Unicidad', 'Validez', 'Integridad', 'Consistencia', 'Disponibilidad'],
+        datasets: [{ label: 'Cumplimiento', data: [82, 53, 68, 78, 61, 70], backgroundColor: [teal, red, gold, teal, red, gold], borderRadius: 10, borderSkipped: false }]
+      },
+      options: {
+        ...baseOptions,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: chartText, font: { size: 11 } }, grid: { display: false } },
+          y: { min: 0, max: 100, ticks: { color: chartText, callback: (value) => `${value}%` }, grid: { color: chartGrid } }
+        }
+      }
+    }));
+
+    const ringData = [
+      ['ring1', 20, red], ['ring2', 15, '#B91C1C'], ['ring3', 50, gold], ['ring4', 50, gold],
+      ['ring5', 40, '#FB923C'], ['ring6', 60, green], ['ring7', 70, teal], ['ring8', 80, '#14B8A6']
+    ];
+
+    ringData.forEach(([id, value, color]) => {
+      charts.push(new Chart(document.getElementById(id), {
+        type: 'doughnut',
+        data: { datasets: [{ data: [value, 100 - value], backgroundColor: [color, 'rgba(255,255,255,.08)'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '76%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+      }));
+    });
+  </script>
+</body>
+</html>
